@@ -186,18 +186,3 @@ class CPU:
             # `operand_a` and `operand_b` in case the instruction needs them.
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-
-            if IR == MUL:
-                self.alu("MUL", operand_a, operand_b)
-                self.pc += 3
-            elif IR == RET:
-                self.SP = self.reg[7]
-                address_to_return_to = self.ram[self.SP]
-                self.reg[7] = (self.SP + 1) % 255
-                self.pc = address_to_return_to
-            elif IR == JMP:
-                register_address = self.ram[self.pc + 1]
-                address_to_jump_to = self.reg[register_address]
-                self.pc = address_to_jump_to
-            else:
-                print("Unknown instruction.")
