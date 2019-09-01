@@ -40,7 +40,9 @@ class CPU:
         self.reg[operand_a] = operand_b
         self.pc += 3
 
-    def prn(self):
+    def prn(self, operand_a):
+        print(self.reg[operand_a])
+        self.pc += 2
 
     def push(self):
 
@@ -61,21 +63,6 @@ class CPU:
 
         address = 0
 
-        # # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010,  # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111,  # PRN R0
-        #     0b00000000,
-        #     0b00000001,  # HLT
-        # ]
-
-        # for instruction in program:
-        #     self.ram[address] = instruction
-        #     address += 1
         try:
             # open the program specified by the second command line argument
             with open(sys.argv[1]) as f:
@@ -125,16 +112,6 @@ class CPU:
         print()
 
     def run(self):
-        HLT = 0b00000001
-        LDI = 0b10000010
-        PRN = 0b01000111
-        MUL = 0b10100010
-        PUSH = 0b01000101
-        POP = 0b01000110
-        CALL = 0b01010000
-        RET = 0b00010001
-        JMP = 0b01010100
-
         running = True
 
         while running:
@@ -148,21 +125,7 @@ class CPU:
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
-            # Then, depending on the value of the opcode, perform the actions needed for the
-            # instruction per the LS-8 spec. Maybe an `if-elif` cascade...? There are other
-            # options, too.
-
-            # Implement a system stack per the spec. Add `PUSH` and `POP` instructions. Read
-            # the beginning of the spec to see which register is the stack pointer.
-            if IR == HLT:
-                running = False
-            elif IR == LDI:
-                self.reg[operand_a] = operand_b
-                self.pc += 3
-            elif IR == PRN:
-                print(self.reg[operand_a])
-                self.pc += 2
-            elif IR == MUL:
+            if IR == MUL:
                 self.alu("MUL", operand_a, operand_b)
                 self.pc += 3
             elif IR == PUSH:
