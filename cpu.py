@@ -87,7 +87,7 @@ class CPU:
             self.pc += 2
 
     def jne(self, operand_a):
-        if self != 0b00000010:
+        if self.fl != 0b00000010:
             self.pc = self.reg[operand_a]
         else:
             self.pc += 2
@@ -115,18 +115,18 @@ class CPU:
             print(f"{sys.argv[0]}: {sys.argv[1]} not found.")
 
     def alu(self, op, reg_a, reg_b):
-        """ALU operations from cheatshet."""
+        """ALU operations from cheatsheet."""
         ADD = 0b10100000
         MUL = 0b10100010
         SUB = 0b10100001
         DIV = 0b10100011
-        AND = 0b10101000
-        OR = 0b10101010
+        # AND = 0b10101000
+        # OR = 0b10101010
         XOR = 0b10101011
-        NOT = 0b01101001
+        # NOT = 0b01101001
         SHL = 0b10101100
         SHR = 0b10101101
-        MOD = 0b10100100
+        # MOD = 0b10100100
         CMP = 0b10100111
 
         if op == ADD:
@@ -141,18 +141,30 @@ class CPU:
         #     # TODO
         # elif op == OR:
         #     # TODO
-        # elif op == XOR:
-        #     # TODO
+        elif op == XOR:
+            xor = self.reg[reg_a] ^ self.reg[reg_b]
+            self.reg[reg_b] = xor
         # elif op == NOT:
         #     # TODO
-        # elif op == SHL:
-        #     # TODO
-        # elif op == SHR:
-        #     # TODO
+        elif op == SHL:
+            shl = self.reg[reg_a]
+            left = shl << self.reg[reg_b]
+            self.reg[reg_a] = left
+        elif op == SHR:
+            shr = self.reg[reg_a]
+            right = shr >> self.reg[reg_b]
+            self.reg[reg_a] = right
         # elif op == MOD:
         #     # TODO
-        # elif op == CMP:
-        #     # TODO
+        elif op == CMP:
+            a = self.reg[reg_a]
+            b = self.reg[reg_b]
+            if a == b:
+                self.fl = 0b00000010
+            elif a < b:
+                self.fl = 0b00000100
+            elif a > b:
+                self.fl = 0b00000001
         else:
             raise Exception("Unsupported ALU operation")
 
