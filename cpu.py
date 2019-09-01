@@ -75,7 +75,11 @@ class CPU:
     def jmp(self, operand_a):
         self.pc = self.reg[operand_a]
 
-    def jeq(self):
+    def jeq(self, operand_a):
+        if self.fl == 0b00000010:
+            self.pc = self.reg[operand_a]
+        else:
+            self.pc += 2
 
     def jne(self):
 
