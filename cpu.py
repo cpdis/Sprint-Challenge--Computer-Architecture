@@ -132,22 +132,22 @@ class CPU:
             self.reg[reg_a] -= self.reg[reg_b]
         elif op == DIV:
             self.reg[reg_a] /= self.reg[reg_b]
-        elif op == AND:
-            return
-        elif op == OR:
-            return
-        elif op == XOR:
-            return
-        elif op == NOT:
-            return
-        elif op == SHL:
-            return
-        elif op == SHR:
-            return
-        elif op == MOD:
-            return
-        elif op == CMP:
-            return
+        # elif op == AND:
+        #     # TODO
+        # elif op == OR:
+        #     # TODO
+        # elif op == XOR:
+        #     # TODO
+        # elif op == NOT:
+        #     # TODO
+        # elif op == SHL:
+        #     # TODO
+        # elif op == SHR:
+        #     # TODO
+        # elif op == MOD:
+        #     # TODO
+        # elif op == CMP:
+        #     # TODO
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -174,9 +174,7 @@ class CPU:
         print()
 
     def run(self):
-        running = True
-
-        while running:
+        while True:
             # It needs to read the memory address that's stored in register `PC`, and store
             # that result in `IR`, the _Instruction Register_. This can just be a local
             # variable in `run()`.
@@ -186,3 +184,29 @@ class CPU:
             # `operand_a` and `operand_b` in case the instruction needs them.
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
+
+            # Determine number of operands
+            cpu_instruct = (IR & 0b11000000) >> 6
+            alu_instruct = (IR & 0b00100000) >> 5
+
+            # Handle CALL and RET
+            # CALL: calls a subroutine (function) at the address stored in the register.
+            if IR == 0b01010000:
+                self.in_table[IR](operand_a)
+                continue
+            # RET: pop the value from the top of the stack and store it in the `PC`.
+            elif IR == 0b00010001:
+                self.in_table[IR]()
+                continue
+
+            # Send the operand to the correct instruction
+            if alu_instruct:
+                self.alu(IR, operand_a, operand_b)
+            elif cpu_instruct == 0:
+                self.in_table[IR]()
+            elif cpu_instruct == 1:
+                self.in_table[IR](operand_a)
+            elif cpu_instruct == 2:
+                self.in_table[IR](operand_a, operand_b)
+            else:
+                self.hlt()
