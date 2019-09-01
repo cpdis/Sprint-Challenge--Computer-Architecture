@@ -56,7 +56,15 @@ class CPU:
         self.pc += 2
 
     def pop(self):
-
+        # 1. Copy the value from the address pointed to by `SP` to the given register.
+        # 2. Increment `SP`.
+        self.SP = self.reg[7]
+        value = self.ram[self.SP]
+        register_address = self.ram[self.pc + 1]
+        self.reg[register_address] = value
+        self.reg[7] = (self.SP + 1) % 255
+        self.pc += 2
+        
     def call(self):
 
     def ret(self):
@@ -137,15 +145,6 @@ class CPU:
             if IR == MUL:
                 self.alu("MUL", operand_a, operand_b)
                 self.pc += 3
-            elif IR == POP:
-                # 1. Copy the value from the address pointed to by `SP` to the given register.
-                # 2. Increment `SP`.
-                self.SP = self.reg[7]
-                value = self.ram[self.SP]
-                register_address = self.ram[self.pc + 1]
-                self.reg[register_address] = value
-                self.reg[7] = (self.SP + 1) % 255
-                self.pc += 2
             elif IR == CALL:
                 # 1. The address of the ** *instruction*** _directly after_ `CALL` is
                 # pushed onto the stack. This allows us to return to where we left off when the subroutine finishes executing.
