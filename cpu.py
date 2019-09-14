@@ -121,7 +121,7 @@ class CPU:
         SUB = 0b10100001
         DIV = 0b10100011
         # AND = 0b10101000
-        # OR = 0b10101010
+        OR = 0b10101010
         XOR = 0b10101011
         # NOT = 0b01101001
         SHL = 0b10101100
@@ -139,11 +139,12 @@ class CPU:
             self.reg[reg_a] /= self.reg[reg_b]
         # elif op == AND:
         #     # TODO
-        # elif op == OR:
-        #     # TODO
+        elif op == OR:
+            bit_or = self.reg[reg_a] | self.reg[reg_b]
+            self.reg[reg_a] = bit_or
         elif op == XOR:
             xor = self.reg[reg_a] ^ self.reg[reg_b]
-            self.reg[reg_b] = xor
+            self.reg[reg_a] = xor
         # elif op == NOT:
         #     # TODO
         elif op == SHL:
